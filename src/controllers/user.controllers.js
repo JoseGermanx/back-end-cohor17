@@ -1,31 +1,47 @@
-
+const User = require("../models/user.models");
 
 // crear un nuevo usuario
 
-const createNewUser = (req, res) => {
-    res.send("registro de usuario");
+//                     req = request --> tendremos disponible info que envie el cliente
+const createNewUser = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    res.status(404).json({ message: "Todos los campos son requeridos" });
+    return;
   }
 
+  try {
+    await User.create({
+      name: name,
+      email: email,
+      password: password,
+    });
+
+    res.status(201).json({ message: "Usuario creado con éxito" });
+
+  } catch (error) {
+    res.status(500).json({ message: "Error de servidor al crear el usuario" });
+    console.log(error);
+  }
+};
 
 //  hacer login
 
 const loginUser = (req, res) => {
-    res.send("Login de usuario");
-  }
-
+  res.send("Login de usuario");
+};
 
 // actualizar datos del usuario
 
 const updateUser = (req, res) => {
-    res.send("Actualizar datos de usuario");
-  }
-
+  res.send("Actualizar datos de usuario");
+};
 
 // eliminar un usuario
 
 const deleteUser = (req, res) => {
-    res.send("Eliminar usuario");
-}
+  res.send("Eliminar usuario");
+};
 
-
-  module.exports = {createNewUser, loginUser, updateUser, deleteUser}
+module.exports = { createNewUser, loginUser, updateUser, deleteUser };
