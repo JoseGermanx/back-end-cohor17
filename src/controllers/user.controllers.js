@@ -44,4 +44,14 @@ const deleteUser = (req, res) => {
   res.send("Eliminar usuario");
 };
 
-module.exports = { createNewUser, loginUser, updateUser, deleteUser };
+
+// get all users
+
+const getAllUsers = async (req, res) => {
+
+  const usersList = await User.find({})
+  res.status(200).json({ message: "Todos los usuarios", data: usersList });
+
+}
+
+module.exports = { createNewUser, loginUser, updateUser, deleteUser, getAllUsers };
