@@ -11,11 +11,11 @@ router.post("/register", createNewUser )
 router.post("/login", loginUser )
 
 // actualizar datos del usuario
-router.put("/update", updateUser )
+router.put("/update/:idUser", updateUser )
 
 // eliminar un usuario
 
-router.delete("/delete", deleteUser )
+router.delete("/delete/:idUser", deleteUser )
 
 // obtener todos los usuarios
 

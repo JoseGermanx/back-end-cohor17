@@ -19,7 +19,6 @@ const createNewUser = async (req, res) => {
     });
 
     res.status(201).json({ message: "Usuario creado con éxito" });
-
   } catch (error) {
     res.status(500).json({ message: "Error de servidor al crear el usuario" });
     console.log(error);
@@ -34,24 +33,79 @@ const loginUser = (req, res) => {
 
 // actualizar datos del usuario
 
-const updateUser = (req, res) => {
-  res.send("Actualizar datos de usuario");
+const updateUser = async (req, res) => {
+  // id del usuario que vamos actualizar --> req en los parámetros de la url
+  const { idUser } = req.params;
+
+  // datos que se van a actualizar --> req
+
+  const { name, email } = req.body;
+
+  const dataUpdate = {
+    name,
+    email,
+  };
+
+  try {
+    //Método para encontrar un registro y actulizarlo
+    const user = await User.findByIdAndUpdate(idUser, dataUpdate);
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Usuario no encontrado",
+      });
+    }
+
+    res.status(200).json({
+      message: "Usuario actualizado",
+      user: {
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error de servidor al intentar actualizar el usuario" });
+    console.log(error);
+  }
 };
 
 // eliminar un usuario
 
-const deleteUser = (req, res) => {
-  res.send("Eliminar usuario");
-};
+const deleteUser = async (req, res) => {
+  const { idUser } = req.params;
 
+  try {
+    const user = await User.findByIdAndDelete(idUser);
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Usuario no encontrado",
+      });
+    }
+
+    res.status(200).json({
+      message: "Usuario eliminado con éxito",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Eror de servidor",
+    });
+  }
+};
 
 // get all users
 
 const getAllUsers = async (req, res) => {
-
-  const usersList = await User.find({})
+  const usersList = await User.find({});
   res.status(200).json({ message: "Todos los usuarios", data: usersList });
+};
 
-}
-
-module.exports = { createNewUser, loginUser, updateUser, deleteUser, getAllUsers };
+module.exports = {
+  createNewUser,
+  loginUser,
+  updateUser,
+  deleteUser,
+  getAllUsers,
+};
