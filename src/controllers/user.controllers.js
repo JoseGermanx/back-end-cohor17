@@ -1,6 +1,7 @@
 const User = require("../models/user.models");
 
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken")
 
 // crear un nuevo usuario
 
@@ -55,11 +56,14 @@ const loginUser = async (req, res) => {
       });
     }
 
+    const token = jwt.sign({id: findUser._id}, "12345", {expiresIn: "1h"})
+
     res.status(200).json({
       message: "Logueado correctamente",
       data: {
         name: findUser.name,
         id: findUser._id,
+        token: token
       },
     });
   } catch (error) {
