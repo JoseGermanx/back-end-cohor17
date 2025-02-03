@@ -1,5 +1,7 @@
 const User = require("../models/user.models");
 
+const bcrypt = require("bcrypt");
+
 // crear un nuevo usuario
 
 //                     req = request --> tendremos disponible info que envie el cliente
@@ -12,10 +14,14 @@ const createNewUser = async (req, res) => {
   }
 
   try {
+    const salt = bcrypt.genSaltSync(); /// define la dificultad de encriptado
+
+    const passwordHash = bcrypt.hashSync(password, salt); // encripta la contraseña
+
     await User.create({
       name: name,
       email: email,
-      password: password,
+      password: passwordHash,
     });
 
     res.status(201).json({ message: "Usuario creado con éxito" });
@@ -27,8 +33,42 @@ const createNewUser = async (req, res) => {
 
 //  hacer login
 
-const loginUser = (req, res) => {
-  res.send("Login de usuario");
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const findUser = await User.findOne({ email: email });
+
+    if (!findUser) {
+      return res.status(400).json({
+        message: "Usuario no encontrado",
+      });
+    }
+
+    // comparar (verificar) la contraseña
+
+    const passVerify = bcrypt.compareSync(password, findUser.password);
+
+    if (!passVerify) {
+      return res.status(400).json({
+        message: "Contraseña incorrecta",
+      });
+    }
+
+    res.status(200).json({
+      message: "Logueado correctamente",
+      data: {
+        name: findUser.name,
+        id: findUser._id,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error en el servidor",
+    });
+    console.log(error);
+  }
+  // se busca en registro en la colección de la base de datos
 };
 
 // actualizar datos del usuario
