@@ -11,6 +11,11 @@ const userSchema = new Schema({
     name: String,
     email: String,
     password: String,
+    rol: {
+        type: String,
+        default: 'user',
+        emun: ['user', 'admin']
+    }
 })
 
 

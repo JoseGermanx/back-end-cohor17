@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken")
 
 //                     req = request --> tendremos disponible info que envie el cliente
 const createNewUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, rol } = req.body;
 
   if (!name || !email || !password) {
     res.status(404).json({ message: "Todos los campos son requeridos" });
@@ -24,6 +24,7 @@ const createNewUser = async (req, res) => {
       name: name,
       email: email,
       password: passwordHash,
+      rol: rol
     });
 
     res.status(201).json({ message: "Usuario creado con éxito" });
@@ -57,15 +58,16 @@ const loginUser = async (req, res) => {
       });
     }
 
-    const token = jwt.sign({id: findUser._id, name: findUser.name}, process.env.SECRET_JWT, {expiresIn: "1h"})
+    const token = jwt.sign({id: findUser._id, userType: findUser.rol}, process.env.SECRET_JWT, {expiresIn: "1h"})
 
-    res.status(200).json({
+    res.status(200)
+    .cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      maxAge: 3600000
+    })
+    .json({
       message: "Logueado correctamente",
-      data: {
-        name: findUser.name,
-        id: findUser._id,
-        token: token
-      },
     });
   } catch (error) {
     res.status(500).json({
@@ -166,11 +168,20 @@ const getDataUser = async (req, res) => {
     }
   }
 
+  const logout = (req, res) =>{
+    res.clearCookie("token",{
+      httpOnly: true,
+      secure: false
+    }).json({message: "Sesión cerrada"})
+  }
+
+
 module.exports = {
   createNewUser,
   loginUser,
   updateUser,
   deleteUser,
   getAllUsers,
-  getDataUser
+  getDataUser,
+  logout
 };

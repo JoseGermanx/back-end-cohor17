@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const authJWT = (req, res, next) => {
 
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+    const token = req.cookies.token
 
     if(!token) return res.status(401).json({message: 'Acceso denegado - No hay token'});
 
@@ -13,6 +13,7 @@ const authJWT = (req, res, next) => {
         const decodedToken = jwt.verify(token, process.env.SECRET_JWT)
 
         req.userId = decodedToken.id
+        req.rol = decodedToken.userType
 
         next(); // para que continue con el siguiente middleware - controlador
 
