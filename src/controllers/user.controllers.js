@@ -57,7 +57,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-    const token = jwt.sign({id: findUser._id}, process.env.SECRET_JWT, {expiresIn: "1h"})
+    const token = jwt.sign({id: findUser._id, name: findUser.name}, process.env.SECRET_JWT, {expiresIn: "1h"})
 
     res.status(200).json({
       message: "Logueado correctamente",
@@ -147,10 +147,30 @@ const getAllUsers = async (req, res) => {
   res.status(200).json({ message: "Todos los usuarios", data: usersList });
 };
 
+const getDataUser = async (req, res) => {
+  try {
+
+    const user = await User.findById(req.userId)
+
+    res.status(200).json({
+      message: "Datos del usuario",
+      data: user
+    })
+  
+
+  }
+  catch (error) {
+     
+    res.status(500).json({message: "Error de servidor"})
+
+    }
+  }
+
 module.exports = {
   createNewUser,
   loginUser,
   updateUser,
   deleteUser,
   getAllUsers,
+  getDataUser
 };
