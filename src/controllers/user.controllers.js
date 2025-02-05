@@ -1,3 +1,4 @@
+require('dotenv').config()
 const User = require("../models/user.models");
 
 const bcrypt = require("bcrypt");
@@ -56,7 +57,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-    const token = jwt.sign({id: findUser._id}, "12345", {expiresIn: "1h"})
+    const token = jwt.sign({id: findUser._id}, process.env.SECRET_JWT, {expiresIn: "1h"})
 
     res.status(200).json({
       message: "Logueado correctamente",
