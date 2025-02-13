@@ -162,6 +162,7 @@ const getDataUser = async (req, res) => {
   catch (error) {
      
     res.status(500).json({message: "Error de servidor"})
+    console.log(error)
 
     }
   }
