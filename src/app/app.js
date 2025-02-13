@@ -12,7 +12,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false}));
 app.use(cors({
     origin: "*", // Cambia según la URL de tu frontend
-    credentials: true, // Permitir envío de cookies
 }
 ))
 
