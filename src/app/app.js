@@ -12,7 +12,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false}));
 app.use(cors({
-    origin: process.env.FRONT_URL, // Cambia según la URL de tu frontend
+    origin: [process.env.FRONT_URL, process.env.FRONT_URL_2] // Cambia según la URL de tu frontend
 }
 ))
 
